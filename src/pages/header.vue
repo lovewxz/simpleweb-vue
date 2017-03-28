@@ -2,34 +2,18 @@
   <div class="header">
     <div class="menu ion-navicon-round" @click="showMenu"></div>
     <div class="logo"></div>
-    <div class="search ion-ios-search-strong"></div>
-    <transition name="move">
-      <div class="menu-detail" v-show="menuShow">
-        <div class="menu-title">
-          <div class="reset-btn ion-arrow-return-left" @click="hideMenu"></div>
-          <div class="menu-logo"></div>
-        </div>
-        <div class="menu-project">
-          <div class="menu-nav" ref="menuNav">
-            <ul>
-              <li v-for="(item,index) in tabList" :class="{on: on === index}" @click="tabMenu(index,$event)">
-                <p>{{item.typename}}</p>
-              </li>
-            </ul>
-          </div>
-          <div class="menu-content-wrapper" ref="menuContent">
-            <div class="menu-box">
-              <div class="menu-content" v-for="(menu,index) in containnerList" v-show="index === on">
-                <div class="menu-item-wrapper">
-                  <div class="menu-item" v-for="menuItem in menu">
-                    <h2 class="item-title">{{menuItem.typename}}</h2>
-                    <div class="item-pro">
-                      <a v-for="itemPro in menuItem.article" href="">{{itemPro.title}}</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <div class="search ion-ios-search-strong" @click="showSearch"></div>
+    <tab-menu :tab-item="tabList" :menu-contain="containnerList" @hideMenu="hideMenu" :menu-show="menuShow"></tab-menu>
+    <transition name="fade">
+      <div class="search-detail" v-show="searchShow">
+        <div class="search-top">
+          <div class="search-input-wrapper">
+            <form action="http://m.0755mingyi.com/plus/search.php">
+              <i class="ion-ios-search-strong icon-search"></i>
+              <input name="q" type="text" class="search-input search-keyword" placeholder="输入你想了解的内容"
+                     id="search-keyword">
+            </form>
+            <span class="search-cancel" @click="hideSearch">取消</span>
           </div>
         </div>
       </div>
@@ -38,55 +22,31 @@
 </template>
 
 <script>
-  import BScroll from 'better-scroll'
+  import tabMenu from '../components/tabMenu'
   const ERR_OK = 0
+
   export default {
     name: 'header',
     data () {
       return {
         menuShow: false,
+        searchShow: false,
         tabList: [],
-        containnerList: [],
-        on: 0
+        containnerList: []
       }
     },
     methods: {
       showMenu () {
         this.menuShow = true
-        this.$nextTick(() => {
-          this._initContentScroll()
-          this._initNavScroll()
-        })
       },
       hideMenu () {
         this.menuShow = false
       },
-      tabMenu (index, event) {
-        if (!event._constructed) {
-          return
-        }
-        this.$nextTick(() => {
-          this._initContentScroll()
-        })
-        this.on = index
+      showSearch () {
+        this.searchShow = true
       },
-      _initNavScroll () {
-        if (!this.menuNav) {
-          this.menuNav = new BScroll(this.$refs.menuNav, {
-            click: true
-          })
-        } else {
-          this.menuNav.refresh()
-        }
-      },
-      _initContentScroll () {
-        if (!this.menuContent) {
-          this.menuContent = new BScroll(this.$refs.menuContent, {
-            click: true
-          })
-        } else {
-          this.menuContent.refresh()
-        }
+      hideSearch () {
+        this.searchShow = false
       }
     },
     created () {
@@ -102,13 +62,14 @@
           this.containnerList = response.data
         }
       })
+    },
+    components: {
+      tabMenu
     }
   }
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import '../assets/scss/mixin.scss';
-
   .header {
     width: 100%;
     background: #262432;
@@ -137,122 +98,60 @@
       display: inline-block;
       margin-top: 10px;
     }
-    .menu-detail {
-      position: fixed;
+    .search-detail {
+      position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: #262432;
-      &.move-enter-active, &.move-leave-active {
-        opacity: 1;
-        transform: translate3d(0, 0, 0);
+      background: #fff;
+      z-index: 30;
+      &.fade-enter,&.fade-leave-active {
+        opacity: 0;
+      }
+      &.fade-enter-active,&.fade-leave-active {
         transition: all .5s;
       }
-      &.move-enter, &.move-leave-active {
-        opacity: 0;
-        transform: translate3d(-100%, 0, 0);
-      }
-      .menu-title {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 41px;
-        text-align: center;
-        .reset-btn {
-          position: absolute;
-          left: 12px;
-          top: 0;
-          font-size: 32px;
-          color: #555266;
-          line-height: 41px;
-        }
-        .menu-logo {
-          width: 233px;
-          height: 18px;
-          display: inline-block;
-          margin-top: 12px;
-        }
-      }
-      .menu-project {
-        position: absolute;
-        top: 41px;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        .menu-nav {
-          flex: 0 0 107px;
-          width: 107px;
-          height: 100%;
-          background: #262432;
-          overflow: hidden;
-          position: relative;
-          ul {
-            padding-bottom: 40px;
-            li {
-              width: 100%;
-              height: 58px;
-              @include border-1px(#42414b);
-              color: #fff;
-              display: table;
-              &.on {
-                top: -1px;
-                background: #555266;
-                color: #999;
-              }
-              &:last-child {
-                @include border-none
-              }
-              p {
-                display: table-cell;
-                vertical-align: middle;
-                text-align: center;
-                font-size: 16px;
-                font-weight: 700;
-              }
+      .search-top {
+        padding: 7px 0 7px 8px;
+        height: 45px;
+        border-bottom: 1px solid #eee;
+        background: #fff;
+        box-sizing: border-box;
+        .search-input-wrapper {
+          font-size: 0;
+          form {
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+            width: 80%;
+            .icon-search {
+              font-size: 24px;
+              color: #999;
+              top: 0px;
+              left: 5%;
+              height: 10px;
+              width: 30px;
+              line-height: 32px;
+              position: absolute;
+            }
+            .search-input {
+              padding: 5px 10px 5px 45px;
+              height: 20px;
+              background: #f0f0f0;
+              border: 0px;
+              border-radius: 5px;
+              font-size: 16px;
+              color: #000;
+              width: 80%;
             }
           }
-        }
-        .menu-content-wrapper {
-          padding: 0 10px 0 15px;
-          background: #555266;
-          flex: 1;
-          height: 100%;
-          overflow: hidden;
-          position: relative;
-          .menu-content {
-            .menu-item-wrapper {
-              padding-bottom: 80px;
-              .menu-item {
-                padding-bottom: 10px;
-                border-bottom: 1px dashed #a7a7a7;
-                .item-title {
-                  font-size: 16px;
-                  color: #fff;
-                  margin: 13px 0 10px 0;
-                  text-align: left;
-                }
-                .item-pro {
-                  display: flex;
-                  flex-wrap: wrap;
-                  justify-content: flex-start;
-                  align-items: center;
-                  a {
-                    flex: 0 0 47%;
-                    width: 47%;
-                    height: 30px;
-                    display: inline-block;
-                    margin-right: 5px;
-                    font-size: 14px;
-                    color: #a7a7a7;
-                    text-align: center;
-                    line-height: 30px;
-                  }
-                }
-              }
-            }
+          .search-cancel {
+            font-size: 16px;
+            color: #03d2bf;
+            display: inline-block;
+            margin-left: 17px;
+            vertical-align: middle;
           }
         }
       }
