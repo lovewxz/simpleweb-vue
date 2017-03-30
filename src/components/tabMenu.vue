@@ -115,6 +115,7 @@
     width: 100%;
     height: 100%;
     background: #262432;
+    z-index: 30;
     &.move-enter-active, &.move-leave-active {
       opacity: 1;
       transform: translate3d(0, 0, 0);

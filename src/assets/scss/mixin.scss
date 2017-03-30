@@ -21,3 +21,25 @@
         background-image: url($img + "@3x.png");
     }
 }
+
+@mixin title() {
+  .case-title {
+    width: 40%;
+    margin: 0 auto;
+    padding: 15px 0 10px 0;
+    display: flex;
+    .line {
+      flex: 1;
+      top: -8px;
+      border-bottom: 1px solid #a0a0a0;
+      position: relative;
+    }
+    .info {
+      padding: 0 7px;
+      color: #333;
+      font-weight: 700;
+      line-height: 16px;
+      font-size: 16px;
+    }
+  }
+}

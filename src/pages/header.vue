@@ -99,7 +99,7 @@
       margin-top: 10px;
     }
     .search-detail {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
