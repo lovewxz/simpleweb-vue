@@ -35,6 +35,14 @@
         containnerList: []
       }
     },
+    watch: {
+      '$route' (to, from) {
+        if (this.menuShow) {
+          // 只有菜单显示的时候,路由发生变化才会把菜单强制设置为false
+          this.menuShow = false
+        }
+      }
+    },
     methods: {
       showMenu () {
         this.menuShow = true
@@ -106,10 +114,10 @@
       height: 100%;
       background: #fff;
       z-index: 30;
-      &.fade-enter,&.fade-leave-active {
+      &.fade-enter, &.fade-leave-active {
         opacity: 0;
       }
-      &.fade-enter-active,&.fade-leave-active {
+      &.fade-enter-active, &.fade-leave-active {
         transition: all .5s;
       }
       .search-top {

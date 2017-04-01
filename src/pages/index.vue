@@ -50,6 +50,22 @@
       </div>
       <swiper-ox :swiper-option="swiperOxOption"></swiper-ox>
     </section>
+    <section class="rush-wrapper">
+      <div class="case-title">
+        <div class="line"></div>
+        <div class="info">限时秒杀</div>
+        <div class="line"></div>
+      </div>
+      <div class="rush-content-wrapper">
+        <rush-content></rush-content>
+      </div>
+    </section>
+    <section class="docotor-wrapper">
+      <img :src="advList.expert_all | prefix" alt="">
+    </section>
+    <section class="hospital-info">
+      <img :src="require('../assets/images/info.jpg')" alt="">
+    </section>
   </div>
 </template>
 
@@ -57,7 +73,10 @@
   import swiperBanner from '@/components/swiperBanner'
   import tabCase from '@/components/tabCase'
   import swiperOx from '@/components/swiperOX'
+  import rushContent from '@/components/rushContent'
+
   const ERR_OK = 0
+  const URL = 'http://m.0755mingyi.com'
   export default {
     name: 'index',
     data () {
@@ -83,19 +102,32 @@
           }
         },
         caseList: [],
-        oxTitle: '氧气少女'
+        oxTitle: '氧气少女',
+        advList: {}
+      }
+    },
+    filters: {
+      prefix (item) {
+        return URL + item
       }
     },
     components: {
       swiperBanner,
       tabCase,
-      swiperOx
+      swiperOx,
+      rushContent
     },
     created () {
       this.$http.get('http://m.0755mingyi.com/api/res.php?action=case').then((response) => {
         response = response.body
         if (response.status === ERR_OK) {
           this.caseList = response.data
+        }
+      })
+      this.$http.get('http://m.0755mingyi.com/api/res.php?action=adv').then((response) => {
+        response = response.body
+        if (response.status === ERR_OK) {
+          this.advList = response.data
         }
       })
       this.oxTitleMap = ['氧气少女', '迷人网红', '都市丽人', '辣妈正传']
@@ -202,6 +234,20 @@
       margin-top: 5px;
       padding: 0 8px 5px 8px;
       @include title();
+    }
+    .rush-wrapper {
+      background: #fff;
+      box-shadow: 0 1px 0 #eee;
+      margin-top: 5px;
+      padding: 0 8px 5px 8px;
+      text-align: center;
+      @include title();
+    }
+    .docotor-wrapper {
+      margin-top: 5px;
+    }
+    .hospital-info {
+      margin-top: 5px;
     }
   }
 </style>

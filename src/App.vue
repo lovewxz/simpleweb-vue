@@ -1,18 +1,22 @@
 <template>
   <div id="app">
     <v-header></v-header>
-    <index></index>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
+    <v-footer></v-footer>
   </div>
 </template>
 
 <script>
   import header from '@/pages/header'
-  import index from '@/pages/index'
+  import footer from '@/pages/footer'
+
   export default {
     name: 'app',
     components: {
       'v-header': header,
-      index
+      'v-footer': footer
     }
   }
 </script>

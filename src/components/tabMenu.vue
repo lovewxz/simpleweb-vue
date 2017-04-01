@@ -20,7 +20,7 @@
                 <div class="menu-item" v-for="menuItem in menu">
                   <h2 class="item-title">{{menuItem.typename}}</h2>
                   <div class="item-pro">
-                    <a v-for="itemPro in menuItem.article" href="">{{itemPro.title}}</a>
+                    <router-link v-for="itemPro in menuItem.article" :to="{name:'project',params:{id:itemPro.id}}" :key="itemPro.id">{{itemPro.title}}</router-link>
                   </div>
                 </div>
               </div>
@@ -30,11 +30,11 @@
       </div>
     </div>
   </transition>
-
 </template>
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll'
+
   export default {
     props: {
       tabItem: {
@@ -81,7 +81,7 @@
         return this.on === index
       },
       hideMenu () {
-        this.$emit('hideMenu', this.menuShow)
+        this.$emit('hideMenu')
       },
       _initNavScroll () {
         if (!this.menuNav) {
