@@ -22,7 +22,7 @@
             <dt>罗湖市中心区深南东路3018号<br>祥琪商厦1-5层</dt>
           </span>
         </div>
-        <a href="/a/laiyuanluxian">
+        <a href="/map">
           <div class="my-map">
             查看地图
           </div>

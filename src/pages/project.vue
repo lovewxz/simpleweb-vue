@@ -1,6 +1,6 @@
 <template>
   <div class="pro-box">
-    <adv></adv>
+    <adv :is-expert="false"></adv>
     <section class="xm-list">
       <div class="xm-pic">
         <img :src="proCon.litpic | prefix" alt="" width="130" height="107">
@@ -18,8 +18,8 @@
       <p class="people-content" v-html="proCon.project_people"></p>
       <div class="xm-people xm-advantage"><i class="ion-paper-airplane"></i><span>技术优势</span></div>
       <p class="people-content" v-html="proCon.project_adv"></p>
-      <div class="xm-people xm-compare"><i class="ion-social-buffer-outline"></i><span>案例对比图</span></div>
-      <div class="xm-compare-pic">
+      <div class="xm-people xm-compare" v-if="proCon.project_before | proCon.project_after"><i class="ion-social-buffer-outline"></i><span>案例对比图</span></div>
+      <div class="xm-compare-pic" v-if="proCon.project_before | proCon.project_after">
         <div class="pic-before">
           <img :src="proCon.project_before | prefix" alt="">
         </div>
@@ -30,6 +30,7 @@
       <div class="xm-people xm-compare"><i class="ion-ios-medkit-outline"></i><span>推荐医师：{{proCon.project_doc}}</span>
       </div>
       <div class="docotor-detail">
+        <img :src="proCon.expert_list | prefix" alt="">
       </div>
     </section>
   </div>

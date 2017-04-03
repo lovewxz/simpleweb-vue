@@ -61,7 +61,7 @@
       </div>
     </section>
     <section class="docotor-wrapper">
-      <img :src="advList.expert_all | prefix" alt="">
+      <adv :is-expert="true"></adv>
     </section>
     <section class="hospital-info">
       <img :src="require('../assets/images/info.jpg')" alt="">
@@ -74,6 +74,7 @@
   import tabCase from '@/components/tabCase'
   import swiperOx from '@/components/swiperOX'
   import rushContent from '@/components/rushContent'
+  import adv from '@/components/adv'
 
   const ERR_OK = 0
   const URL = 'http://m.0755mingyi.com'
@@ -115,7 +116,8 @@
       swiperBanner,
       tabCase,
       swiperOx,
-      rushContent
+      rushContent,
+      adv
     },
     created () {
       this.$http.get('http://m.0755mingyi.com/api/res.php?action=case').then((response) => {

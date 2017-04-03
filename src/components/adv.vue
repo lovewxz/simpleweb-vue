@@ -1,6 +1,9 @@
 <template>
   <div class="adv-pic">
-    <a :href="adv.redirecturl">
+    <a href="/experts" v-if="isExpert">
+      <img :src="adv.expert_all | prefix" alt="">
+    </a>
+    <a :href="adv.redirecturl" v-else>
       <img :src="adv.art_list_ad | prefix" alt="">
     </a>
   </div>
@@ -10,6 +13,12 @@
   const ERR_OK = 0
   const URL = 'http://m.0755mingyi.com'
   export default {
+    props: {
+      isExpert: {
+        type: Boolean,
+        default: false
+      }
+    },
     data () {
       return {
         adv: {}
