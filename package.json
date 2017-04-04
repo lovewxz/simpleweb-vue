@@ -15,6 +15,8 @@
     "mint-ui": "^2.2.2",
     "vue": "^2.2.2",
     "vue-awesome-swiper": "^2.3.8",
+    "vue-infinite-loading": "^2.0.3",
+    "vue-lazyload": "^1.0.3",
     "vue-resource": "^1.2.1",
     "vue-router": "^2.2.0"
   },

@@ -1,7 +1,7 @@
 <template>
-
   <div class="case-content-wrapper">
     <div class="tab-case">
+      <router-link class="more" to="/case">更多</router-link>
       <span class="tab-item" v-for="(item,index) in tab" :key="item.id" :class="{on:index === pageNum}"
             @click="slideTo(index)">{{item}}</span>
     </div>
@@ -156,6 +156,7 @@
       border-bottom: 1px solid #eee;
       padding: 10px 40px 10px 5px;
       font-size: 0px;
+      position: relative;
       .tab-item {
         display: inline-block;
         flex: 1;
@@ -165,6 +166,13 @@
         &.on {
           color: #333;
         }
+      }
+      .more {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        font-size: 14px;
+        color: #d3d3d3;
       }
     }
   }

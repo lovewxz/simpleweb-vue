@@ -1,9 +1,8 @@
 <template>
   <div class="doc-box">
     <adv :is-expert="true"></adv>
-    <div class="doc-list" ref="wrapper" :style="{ height: wrapperHeight + 'px' }">
-      <div class="doc-item-wrapper" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading"
-           infinite-scroll-distance="10">
+    <div class="doc-list" ref="wrapper">
+      <div class="doc-item-wrapper">
         <div class="doc-item" v-for="item in expertList">
           <div class="doc-pic">
             <img :src="item.litpic | prefix" alt="" width="103" height="86">
@@ -12,15 +11,19 @@
             <div class="doc-name">{{item.title}}<span>{{item.expert_title}}</span></div>
             <div class="doc-adv">擅长项目</div>
             <p class="doc-pro">{{item.expert_advantage}}</p>
-            <a href="/a/zhuanjiatuandui/2017/0322/208.html">
+            <router-link :to="{name:'article',params:{id:item.id}}" :key="item.id">
               <div class="doc-btn">
                 了解详情
               </div>
-            </a>
+            </router-link>
           </div>
         </div>
+        <infinite-loading :on-infinite="onInfinite" ref="infiniteLoading" spinner="spiral" :distance="distance">
+          <span slot="no-more">
+            没有更多专家了
+          </span>
+        </infinite-loading>
       </div>
-      <p v-show="loading">加载中...</p>
     </div>
   </div>
 </template>
@@ -28,52 +31,36 @@
 <script type="text/ecmascript-6">
   const ERR_OK = 0
   const URL = 'http://m.0755mingyi.com'
+  const api = URL + '/api/res.php?action=expertslist'
 
   import adv from '@/components/adv'
-  import Vue from 'vue'
-  import {InfiniteScroll} from 'mint-ui'
-  Vue.use(InfiniteScroll)
+  import InfiniteLoading from 'vue-infinite-loading'
 
   export default {
     data () {
       return {
         expertList: [],
-        wrapperHeight: 0,
-        loading: false,
-        page: 1,
-        num: 3,
-        total: 0
+        num: 5,
+        distance: 10
       }
     },
     methods: {
-      loadMore () {
-        this.loading = true
-        setTimeout(() => {
-          if (this.page > Math.ceil(this.total / this.num)) {
-            return
+      onInfinite () {
+        this.$http.get(api, {
+          params: {
+            page: this.expertList.length / this.num + 1,
+            num: this.num
           }
-          this.page++
-          this.$http.get('http://m.0755mingyi.com/api/res.php?action=expertslist&page=' + this.page + '&num=' + this.num).then((response) => {
-            response = response.body
-            if (response.status === ERR_OK) {
-              this.expertList = this.expertList.concat(response.data.list)
-              this.loading = false
-            }
-          })
-        }, 5000)
+        }).then((res) => {
+          res = res.body
+          if (res.data.list && res.data.list.length && res.status === ERR_OK) {
+            this.expertList = this.expertList.concat(res.data.list)
+            this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded')
+          } else {
+            this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete')
+          }
+        })
       }
-    },
-    mounted () {
-      this.$http.get('http://m.0755mingyi.com/api/res.php?action=expertslist&num=' + this.num).then((response) => {
-        response = response.body
-        if (response.status === ERR_OK) {
-          this.expertList = response.data.list
-          this.total = response.data.total
-          this.$nextTick(() => {
-            this.wrapperHeight = document.documentElement.clientHeight - this.$refs.wrapper.getBoundingClientRect().top
-          })
-        }
-      })
     },
     filters: {
       prefix (item) {
@@ -81,6 +68,7 @@
       }
     },
     components: {
+      InfiniteLoading,
       adv
     }
   }
@@ -94,7 +82,7 @@
     .doc-list {
       background: #fff;
       margin-top: 8px;
-      overflow: scroll;
+      overflow: hidden;
       .doc-item {
         display: flex;
         padding: 10px 5px 16px 8px;

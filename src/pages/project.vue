@@ -67,6 +67,8 @@
         response = response.body
         if (response.status === ERR_OK) {
           this.proCon = response.data
+        } else {
+          this.$router.push('/')
         }
       })
     },
