@@ -5,18 +5,19 @@
       <h1 class="article-title">{{article.title}}</h1>
       <div class="article-info">
         <span class="article-source">来源:{{article.writer}}</span>
-        <span class="article-time">日期:{{article.pubdate}}</span>
+        <span class="article-time">日期:{{article.pubdate | formateDate}}</span>
       </div>
-      <div class="article-content" v-html="article.expert_content">
-      </div>
+      <div class="article-content" v-html="content()"></div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import adv from '@/components/adv'
+  import {formateDate} from '@/assets/js/date'
+
   const URL = 'http://m.0755mingyi.com'
-  const api = URL + '/api/res.php?action=expertarc'
+  let api = URL + '/api/res.php?action=expertarc'
   const ERR_OK = 0
 
   export default {
@@ -26,6 +27,9 @@
       }
     },
     created () {
+      if (this.$route.fullPath.indexOf('case') > 0) {
+        api = URL + '/api/res.php?action=casearc'
+      }
       this.$http.get(api, {
         params: {
           id: this.$route.params.id
@@ -34,11 +38,26 @@
         res = res.body
         if (res.status === ERR_OK) {
           this.article = res.data
-          console.log(res.data)
         } else {
           this.$router.push('/')
         }
       })
+    },
+    filters: {
+      formateDate (time) {
+        time.length > 10 ? time * 1000 : time
+        let date = new Date(time * 1000)
+        return formateDate(date, 'yyyy-MM-dd')
+      }
+    },
+    methods: {
+      content () {
+        if (this.$route.fullPath.indexOf('case') > 0) {
+          return this.article.casecontent
+        } else {
+          return this.article.expert_content
+        }
+      }
     },
     components: {
       adv
@@ -73,10 +92,10 @@
       }
       .article-content {
         margin-top: 10px;
-      }
-      img {
-        margin: 5px auto;
-        height: auto !important;
+        img {
+          margin: 5px auto;
+          height: auto !important;
+        }
       }
     }
   }

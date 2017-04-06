@@ -24,11 +24,11 @@
           <i class="ion-pricetag"></i>
           <span class="tag-name" v-for="tag in item.tag">{{tag.tag}}</span>
         </div>
-        <a href="/a/meiliriji/meifu/2017/0314/203.html">
+        <router-link :to="{name:'casearc',params:{id:item.id}}" :key="item.id">
           <div class="case-btn">
             详情
           </div>
-        </a>
+        </router-link>
       </div>
       <infinite-loading :on-infinite="onInfinite" ref="infiniteLoading" spinner="spiral" :distance="distance">
           <span slot="no-more">

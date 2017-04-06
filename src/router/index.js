@@ -44,6 +44,11 @@ export default new Router({
       component: caselist
     },
     {
+      path: '/case/:id',
+      name: 'casearc',
+      component: article
+    },
+    {
       path: '*',
       component: notFound
     }
